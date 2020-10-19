@@ -1,9 +1,9 @@
 <template>
 	<view class="xg-money-component">
-		<text :style="{color: color, 'font-size': (camel ? fontSize*scale : fontSize) + 'px', transform: camel ? 'translateY(' + (1 - scale)*0.5*fontSize + 'px)' : ''}">{{currencySymbol}}</text>
-		<text :style="{color: color, 'font-size': fontSize + 'px'}">{{moneyArray[0]}}</text>
-		<text v-if="precision" :style="{color: color, 'font-size': (camel ? fontSize*scale : fontSize) + 'px', transform: camel ? 'translateY(' + (1 - scale)*0.5*fontSize + 'px)' : ''}">.</text>
-		<text :style="{color: color, 'font-size': (camel ? fontSize*scale : fontSize) + 'px', transform: camel ? 'translateY(' + (1 - scale)*0.5*fontSize + 'px)' : ''}">{{moneyArray[1]}}</text>
+		<text :class="{'line-through': lineThrough}" :style="{color: color, 'font-size': (camel ? fontSize*scale : fontSize) + 'px', transform: camel ? 'translateY(' + (1 - scale)*0.5*fontSize + 'px)' : ''}">{{currencySymbol}}</text>
+		<text :class="{'line-through': lineThrough}" :style="{color: color, 'font-size': fontSize + 'px'}">{{moneyArray[0]}}</text>
+		<text :class="{'line-through': lineThrough}" v-if="precision" :style="{color: color, 'font-size': (camel ? fontSize*scale : fontSize) + 'px', transform: camel ? 'translateY(' + (1 - scale)*0.5*fontSize + 'px)' : ''}">.</text>
+		<text :class="{'line-through': lineThrough}" :style="{color: color, 'font-size': (camel ? fontSize*scale : fontSize) + 'px', transform: camel ? 'translateY(' + (1 - scale)*0.5*fontSize + 'px)' : ''}">{{moneyArray[1]}}</text>
 	</view>
 </template>
 
@@ -28,6 +28,10 @@
 			},
 			//是否为驼峰形式
 			camel: {
+				type: Boolean,
+				default: false
+			},
+			lineThrough: {
 				type: Boolean,
 				default: false
 			},
@@ -81,5 +85,8 @@
 		flex-direction: row;
 		align-items: center;
 		
+	}
+	.line-through {
+		text-decoration: line-through;
 	}
 </style>

@@ -1,0 +1,11 @@
+{
+  "name": "xg-money",
+  "version": "1.0.0",
+  "main": "xg-money.vue",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "xghell",
+  "license": "ISC",
+  "description": ""
+}
