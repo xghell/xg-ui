@@ -1,5 +1,5 @@
 <template>
-	<view class="xg-tab-title-item" id="xg-tab-title-item" ref="xg-tab-title-item" @tap="titleItemTap">
+	<view class="xg-tab-title-item" id="xg-tab-title-item" @tap="titleItemTap">
 		<slot></slot>
 	</view>
 </template>
@@ -21,12 +21,12 @@
 		},
 		mounted() {
 			this.$nextTick(() =>{
-				this.getNodesSize('xg-tab-title-item', this).then(data => {
-					setTimeout(() => {
+				setTimeout(() => {
+					uni.createSelectorQuery().in(this).select('#xg-tab-title-item') .fields({size: true}).exec(data => {
 						this.size.width = data[0].width;
 						this.size.height = data[0].height;
-					}, 300);
-				})
+					})
+				}, 300);
 			})
 		},
 		methods: {
@@ -92,49 +92,6 @@
 				
 				return sum;
 			},
-			getNodesSize(nodeIndex, ctx) {
-				const nodeIndexList = Array.isArray(nodeIndex) ? nodeIndex : [nodeIndex];
-				
-				
-				
-				// #ifndef APP-NVUE
-				const query = uni.createSelectorQuery().in(ctx);
-				
-				nodeIndexList.forEach(nodeIndex => {
-					query.select('#' + nodeIndex).fields({rect: true, size: true});
-				})
-				
-				return new Promise((resolve, reject) => {
-					query.exec(data => {
-						const nodeSizeData = data.map(item => {
-							return item;
-						})
-						
-						resolve(nodeSizeData);
-					})
-				})
-				// #endif
-				
-				
-				// #ifdef APP-NVUE
-				const dom = uni.requireNativePlugin('dom');
-				
-				function getComponentRect(ref) {
-					return new Promise(function (resolve, reject) {
-						dom.getComponentRect(ref, data => {
-							resolve(data.size);
-						})
-					})
-				}
-				
-				
-				const nodeSizeData = nodeIndexList.map(nodeIndex => {
-					return getComponentRect(ctx.$refs[nodeIndex]);
-				})
-				
-				return Promise.all(nodeSizeData);
-				// #endif
-			}
 		},
 	}
 </script>

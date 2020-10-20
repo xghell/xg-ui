@@ -4,7 +4,7 @@
 	<!-- #endif -->
 	
 	<!-- #ifdef APP-NVUE -->
-	<scroller class="scroll-container" ref="xg-tab-title" :class="{'horizon-layout': !vertical}" :show-scrollbar="showScrollbar" :scroll-direction="vertical ? 'vertical' : 'horizontal'">
+	<scroller class="scroll-container" id="xg-tab-title" :class="{'horizon-layout': !vertical}" :show-scrollbar="showScrollbar" :scroll-direction="vertical ? 'vertical' : 'horizontal'">
 	<!-- #endif -->
 	
 		<view ref="tab-title-content" :class="{'horizon-layout': !vertical}">
@@ -88,10 +88,10 @@
 		mounted() {
 			this.$nextTick(() => {
 				setTimeout(() => {
-					this.getNodesSize('xg-tab-title', this).then(data => {
+					uni.createSelectorQuery().in(this).select('#xg-tab-title') .fields({size: true}).exec(data => {
 						this.width = data[0].width;
 						this.height = data[0].height;
-					});
+					})
 				}, 300);
 			});
 		},
@@ -154,50 +154,6 @@
 				return sum;
 			},
 			// #endif
-			
-			async getNodesSize(nodeIndex, ctx) {
-				const nodeIndexList = Array.isArray(nodeIndex) ? nodeIndex : [nodeIndex];
-				
-				
-				
-				// #ifndef APP-NVUE
-				const query = uni.createSelectorQuery().in(ctx);
-				
-				nodeIndexList.forEach(nodeIndex => {
-					query.select('#' + nodeIndex).fields({rect: true, size: true});
-				})
-				
-				return new Promise((resolve, reject) => {
-					query.exec(data => {
-						const nodeSizeData = data.map(item => {
-							return item;
-						})
-						
-						resolve(nodeSizeData);
-					})
-				})
-				// #endif
-				
-				
-				// #ifdef APP-NVUE
-				const dom = uni.requireNativePlugin('dom');
-				
-				function getComponentRect(ref) {
-					return new Promise(function (resolve, reject) {
-						dom.getComponentRect(ref, data => {
-							resolve(data.size);
-						})
-					})
-				}
-				
-				
-				const nodeSizeData = nodeIndexList.map(nodeIndex => {
-					return getComponentRect(ctx.$refs[nodeIndex]);
-				})
-				
-				return Promise.all(nodeSizeData);
-				// #endif
-			}
 		},
 	}
 </script>
