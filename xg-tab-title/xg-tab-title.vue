@@ -99,7 +99,7 @@
 			scrollToScrollLeft(scrollLeft) {
 				
 				// #ifdef APP-NVUE
-				dom. scrollToElement(this.$refs['tab-title-content'], {offset: scrollLeft, animated: this.animation});
+				dom.scrollToElement(this.$refs['tab-title-content'], {offset: scrollLeft, animated: this.animation});
 				// #endif
 				
 				// #ifndef APP-NVUE
@@ -112,7 +112,7 @@
 			},
 			scrollToScrollTop(scrollTop) {
 				// #ifdef APP-NVUE
-				dom. scrollToElement(this.$refs['tab-title-content'], {offset: scrollTop, animated: this.animation});
+				dom.scrollToElement(this.$refs['tab-title-content'], {offset: scrollTop, animated: this.animation});
 				// #endif
 				
 				// #ifndef APP-NVUE
