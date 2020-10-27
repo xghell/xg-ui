@@ -6,7 +6,7 @@
 
 <script>
 	/**
-	 * 必须手动调用 calculateLayout() 方法进行瀑布流，在image组件中建议在load事件触发后调用
+	 * 如果xg-waterfall组件属性autoLayout为假，则必须手动调用 calculateLayout() 方法进行瀑布流，在image组件中建议在load事件触发后调用
 	 */
 	export default {
 		name: 'XgWaterfallItem',
@@ -15,14 +15,15 @@
 			return {
 				top: 0,
 				left: 0,
-				hasLayouted: false
 			}
 		},
-		// mounted() {
-		// 	this.$nextTick(function () {
-		// 		// this.calculateLayout();
-		// 	})
-		// },
+		mounted() {
+			this.$nextTick(function () {
+				if (this.waterfall.autoLayout) {
+					this.calculateLayout();
+				}
+			})
+		},
 		computed: {
 			width() {
 				return this.waterfall.realColumnWidth;
@@ -30,39 +31,17 @@
 		},
 		methods: {
 			calculateLayout() {
-				if (!this.hasLayouted) {
-					this.hasLayouted = true;
+				if (!this._hasLayouted) {
+					this._hasLayouted = true;
 					
 					this.reCalculateLayout();
 				}
 			},
 			reCalculateLayout() {
-				// console.log('ww');
-				// #ifdef APP-PLUS-NVUE
-				const dom = uni.requireNativePlugin('dom');
-				dom.getComponentRect(this.$refs['waterfall-item'], data => {
-					const waterfallItemHeight = data.size.height;
-					// console.log(waterfallItemHeight);
-					
-					const minColumnHeight = Math.min(...this.waterfall.columnsHeight);
-					const minColumnIndex = this.waterfall.columnsHeight.indexOf(minColumnHeight);
-					
-					this.top = minColumnHeight;
-					this.waterfall.columnsHeight[minColumnIndex] += waterfallItemHeight;
-					this.left = this.waterfall.columnsLeft[minColumnIndex];
-					
-					this.waterfall.waterfallHeight = Math.max(...this.waterfall.columnsHeight);
-					
-					// console.log(waterfallItemHeight);
-				})
-				// #endif
-				
-				// #ifndef APP-PLUS-NVUE
 				const selector = uni.createSelectorQuery().in(this);
 				selector.select('.waterfall-item').fields({size: true});
 				selector.exec(data => {
 					const waterfallItemHeight = data[0].height;
-					// console.log(this.waterfall.columnsHeight, waterfallItemHeight);
 					
 					const minColumnHeight = Math.min(...this.waterfall.columnsHeight);
 					
@@ -73,9 +52,7 @@
 					this.left = this.waterfall.columnsLeft[minColumnIndex];
 					
 					this.waterfall.waterfallHeight = Math.max(...this.waterfall.columnsHeight);
-					// console.log(waterfallItemHeight);
 				})
-				// #endif
 			}
 		},
 	}

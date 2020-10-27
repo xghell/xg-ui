@@ -25,8 +25,13 @@
 			};
 		},
 		props: {
+			//如果为false,则必须手动调用xg-waterfall-item组件中的calculateLayout方法进行布局计算
+			autoLayout: {
+				type: Boolean,
+				default: true,
+			},
 			width: {
-				type: String,
+				type: String|Number,
 				default: '750rpx',
 			},
 			columnCount: {
@@ -34,19 +39,19 @@
 				default: 0
 			},
 			columnWidth: {
-				type: String,
+				type: String|Number,
 				default: ''
 			},
 			columnGap: {
-				type: String,
+				type: String|Number,
 				default: '0rpx'
 			},
 			leftGap: {
-				type: String,
+				type: String|Number,
 				default: '0px'
 			},
 			rightGap: {
-				type: String,
+				type: String|Number,
 				default: '0rpx'
 			}
 		},
@@ -99,14 +104,21 @@
 		},
 		methods: {
 			toPx(value) {
-				const result = /(\d+)(\w+)/.exec(value);
-				if ('rpx' === result[2].trim()) {
-					return uni.getSystemInfoSync().screenWidth * Number(result[1]) / 750;
-				} else if('px' === result[2].trim()) {
-					return Number(result[1]);
-				} else {
-					throw new TypeError(`${value}单位格式不正确`);
+				const windowWidth = uni.getSystemInfoSync().windowWidth;
+				const result = /(-?\d+\.?\d*)(\w*)/.exec(value);
+				if (result&&result[1]) {
+					if (result[2]) {
+						if ('rpx' === result[2].trim()) {
+							return windowWidth * Number(result[1]) / 750;
+						} else {
+							return Number(result[1]);
+						}
+					} else {
+						return Number(result[1]);
+					}
 				}
+				
+				throw new TypeError(`${value}单位格式不正确`);
 			},
 		},
 	}
@@ -114,7 +126,7 @@
 
 <style lang="scss" scoped>
 	.waterfall {
-		/* border-width: 5px; */
+		// border-width: 5px;
 		position: relative;
 		/* width: 750rpx; */
 	}
