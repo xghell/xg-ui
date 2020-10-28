@@ -1,9 +1,9 @@
 <template>
 	<view class="xg-money-component">
-		<text :class="{'line-through': lineThrough}" :style="{color: color, 'font-size': (camel ? fontSize*scale : fontSize) + 'px', transform: camel ? 'translateY(' + (1 - scale)*0.5*fontSize + 'px)' : ''}">{{currencySymbol}}</text>
-		<text :class="{'line-through': lineThrough}" :style="{color: color, 'font-size': fontSize + 'px'}">{{moneyArray[0]}}</text>
-		<text :class="{'line-through': lineThrough}" v-if="precision" :style="{color: color, 'font-size': (camel ? fontSize*scale : fontSize) + 'px', transform: camel ? 'translateY(' + (1 - scale)*0.5*fontSize + 'px)' : ''}">.</text>
-		<text :class="{'line-through': lineThrough}" :style="{color: color, 'font-size': (camel ? fontSize*scale : fontSize) + 'px', transform: camel ? 'translateY(' + (1 - scale)*0.5*fontSize + 'px)' : ''}">{{moneyArray[1]}}</text>
+		<text class="xg-money-item" :class="{lineThrough: lineThrough}" :style="{color: color, fontSize: camelFontSize + 'px',lineHeight: camelFontSize + 'px', transform: 'translateY(' + camelTranslateY + 'px)'}">{{currencySymbol}}</text>
+		<text class="xg-money-item" :class="{lineThrough: lineThrough}" :style="{color: color, fontSize: fontSize + 'px', lineHeight: fontSize + 'px'}">{{moneyArray[0]}}</text>
+		<text class="xg-money-item" :class="{lineThrough: lineThrough}" v-if="precision" :style="{color: color, fontSize: camelFontSize + 'px',lineHeight: camelFontSize + 'px', transform: 'translateY(' + camelTranslateY + 'px)'}">.</text>
+		<text class="xg-money-item" :class="{lineThrough: lineThrough}" :style="{color: color, fontSize: camelFontSize + 'px',lineHeight: camelFontSize + 'px', transform: 'translateY(' + camelTranslateY + 'px)'}">{{moneyArray[1]}}</text>
 	</view>
 </template>
 
@@ -55,6 +55,13 @@
 			},
 			fontSize() {
 				return this.toPx(this.size);
+			},
+			camelFontSize() {
+				return this.fontSize * this.scale;
+			},
+			camelTranslateY() {
+				// return 0;
+				return -(1 - this.scale) * (this.fontSize*0.2);
 			}
 		},
 		methods: {
@@ -83,8 +90,12 @@
 		display: flex;
 		/* #endif */
 		flex-direction: row;
-		align-items: center;
+		align-items: flex-end;
 		
+	}
+	.xg-money-item {
+		// border-width: 1px;
+		// @include flex-layout(row, center, center);
 	}
 	.line-through {
 		text-decoration: line-through;
