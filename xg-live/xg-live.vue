@@ -13,7 +13,7 @@
 	 */
 	export default {
 		props: {
-			started: {
+			animation: {
 				type: Boolean,
 				default: false,
 			},
@@ -63,7 +63,7 @@
 		created() {
 			this.generatePillar();
 			
-			this.$watch('started', (newValue, oldValue) => {
+			this.$watch('animation', (newValue, oldValue) => {
 				if (newValue) {
 					this.start();
 				} else {
