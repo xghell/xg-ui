@@ -1,13 +1,22 @@
 <template>
-	<view ref="waterfall-item" class="waterfall-item" :style="{left: left + 'px', top: top + 'px', width: width + 'px'}">
+	<!-- #ifdef APP-NVUE -->
+	<cell>
+		<slot></slot>
+	</cell>
+	<!-- #endif -->
+	
+	<!-- #ifndef APP-NVUE -->
+	<view id="waterfall-item" class="waterfall-item" :style="{left: left + 'px', top: top + 'px', width: width + 'px'}">
 		<slot></slot>
 	</view>
+	<!-- #endif -->
 </template>
 
 <script>
 	/**
 	 * 如果xg-waterfall组件属性autoLayout为假，则必须手动调用 calculateLayout() 方法进行瀑布流，在image组件中建议在load事件触发后调用
 	 */
+	// #ifndef APP-NVUE
 	export default {
 		name: 'XgWaterfallItem',
 		inject: ['waterfall'],
@@ -18,7 +27,7 @@
 			}
 		},
 		mounted() {
-			this.$nextTick(function () {
+			this.$nextTick(function(){
 				if (this.waterfall.autoLayout) {
 					this.calculateLayout();
 				}
@@ -39,7 +48,7 @@
 			},
 			reCalculateLayout() {
 				const selector = uni.createSelectorQuery().in(this);
-				selector.select('.waterfall-item').fields({size: true});
+				selector.select('#waterfall-item').fields({size: true});
 				selector.exec(data => {
 					const waterfallItemHeight = data[0].height;
 					
@@ -56,12 +65,16 @@
 			}
 		},
 	}
+	// #endif
 </script>
 
 <style lang="scss" scoped>
+	/* #ifndef APP-NVUE */
 	.waterfall-item {
 		position: absolute;
 		/* border-width: 6px;
 		border-color: red; */
 	}
+	/* #endif */
+	
 </style>

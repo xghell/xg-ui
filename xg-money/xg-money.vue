@@ -1,9 +1,9 @@
 <template>
 	<view class="xg-money-component">
-		<text class="xg-money-item" :class="{lineThrough: lineThrough}" :style="{color: color, fontSize: camelFontSize + 'px',lineHeight: camelFontSize + 'px', transform: 'translateY(' + camelTranslateY + 'px)'}">{{currencySymbol}}</text>
-		<text class="xg-money-item" :class="{lineThrough: lineThrough}" :style="{color: color, fontSize: fontSize + 'px', lineHeight: fontSize + 'px'}">{{moneyArray[0]}}</text>
-		<text class="xg-money-item" :class="{lineThrough: lineThrough}" v-if="precision" :style="{color: color, fontSize: camelFontSize + 'px',lineHeight: camelFontSize + 'px', transform: 'translateY(' + camelTranslateY + 'px)'}">.</text>
-		<text class="xg-money-item" :class="{lineThrough: lineThrough}" :style="{color: color, fontSize: camelFontSize + 'px',lineHeight: camelFontSize + 'px', transform: 'translateY(' + camelTranslateY + 'px)'}">{{moneyArray[1]}}</text>
+		<text class="xg-money-item" :class="{'line-through': lineThrough}" :style="{color: color, fontSize: camelFontSize + 'px',lineHeight: camelFontSize + 'px', transform: 'translateY(' + camelTranslateY + 'px)'}">{{currencySymbol}}</text>
+		<text class="xg-money-item" :class="{'line-through': lineThrough}" :style="{color: color, fontSize: fontSize + 'px', lineHeight: fontSize + 'px'}">{{moneyArray[0]}}</text>
+		<text class="xg-money-item" :class="{'line-through': lineThrough}" v-if="precision" :style="{color: color, fontSize: camelFontSize + 'px',lineHeight: camelFontSize + 'px', transform: 'translateY(' + camelTranslateY + 'px)'}">.</text>
+		<text class="xg-money-item" :class="{'line-through': lineThrough}" :style="{color: color, fontSize: camelFontSize + 'px',lineHeight: camelFontSize + 'px', transform: 'translateY(' + camelTranslateY + 'px)'}">{{moneyArray[1]}}</text>
 	</view>
 </template>
 
@@ -18,7 +18,7 @@
 			},
 			//字体大小，驼峰形式为则为峰顶
 			size: {
-				type: String,
+				type: String|Number,
 				default: '32rpx',
 			},
 			//驼峰形式，两侧字体相对中间驼峰缩放比例
@@ -57,24 +57,33 @@
 				return this.toPx(this.size);
 			},
 			camelFontSize() {
-				return this.fontSize * this.scale;
+				if (this.camel) {
+					return this.fontSize * this.scale;
+				}
+				 return this.fontSize;
 			},
 			camelTranslateY() {
-				// return 0;
-				return -(1 - this.scale) * (this.fontSize*0.2);
+				if (this.camel) {
+					return -(1 - this.scale) * (this.fontSize*0.2);
+				}
+				
+				return 0;
 			}
 		},
 		methods: {
 			toPx(value) {
-				const result = /(\d+\.?\d*)(\w+)/.exec(value);
-				if (result[2]) {
-					if ('rpx' === result[2].trim()) {
-						return uni.getSystemInfoSync().screenWidth * Number(result[1]) / 750;
-					}
-					
-					if ('px' === result[2].trim()) {
+				const windowWidth = uni.getSystemInfoSync().windowWidth;
+				const result = /(-?\d+\.?\d*)(\w*)/.exec(value);
+				if (result&&result[1]) {
+					if (result[2]) {
+						if ('rpx' === result[2].trim()) {
+							return windowWidth * Number(result[1]) / 750;
+						} else {
+							return Number(result[1]);
+						}
+					} else {
 						return Number(result[1]);
-					} 
+					}
 				}
 				
 				throw new TypeError(`${value}单位格式不正确`);

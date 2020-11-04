@@ -1,7 +1,15 @@
 <template>
-	<view ref="waterfall" class="waterfall" :style="{height: waterfallHeight + 'px'}">
+	<!-- #ifdef APP-NVUE -->
+	<waterfall :style="{width: width + 'px'}" :column-count="realColumnCount" :column-width="realColumnWidth" :column-gap="realColumnGap" :left-gap="realLeftGap" :right-gap="realRightGap">
+		<slot></slot>
+	</waterfall>
+	<!-- #endif -->
+	
+	<!-- #ifndef APP-NVUE -->
+	<view class="waterfall" :style="{width: width + 'px', height: waterfallHeight + 'px'}">
 		<slot></slot>
 	</view>
+	<!-- #endif -->
 </template>
 
 <script>
@@ -15,7 +23,6 @@
 	 * left-gap: [可选]左边cell和列表的间隙. 如果未指定 ，则对应 0
 	 * right-gap: [可选]右边cell和列表的间隙. 如果未指定，则对应 0
 	 * @getWaterfallItemWidth 获取子组件宽度，触发时瀑布流布局还未开始，可用于xg-waterfall-item中高度或其他尺寸，瀑布流依然生效
-	 * @getWaterfallHeight 获取总高度
 	 */
 	export default {
 		name: 'XgWaterfall',
@@ -31,8 +38,8 @@
 				default: true,
 			},
 			width: {
-				type: String|Number,
-				default: '750rpx',
+				type: Number|String,
+				default: '750rpx'
 			},
 			columnCount: {
 				type: Number,
@@ -65,6 +72,11 @@
 		},
 		computed: {
 			realColumnCount() {
+				// #ifdef APP-NVUE
+				return this.columnCount;
+				// #endif
+				
+				// #ifndef APP-NVUE
 				if (Object.is(this.columnWidth, '')) {
 					return Math.max(1, this.columnCount);
 				} else if(0 < this.columnCount) {
@@ -72,9 +84,16 @@
 				} else {
 					return Math.max(1, Math.round(this.waterfallWidth / this.toPx(this.columnWidth)));
 				}
+				// #endif
 			},
 			realColumnWidth() {
+				// #ifdef APP-NVUE
+				return this.columnWidth&&this.toPx(this.columnWidth);
+				// #endif
+				
+				// #ifndef APP-NVUE
 				return (this.waterfallWidth - this.realLeftGap - this.realRightGap - this.realColumnGap * (this.realColumnCount - 1)) / this.realColumnCount;
+				// #endif
 			},
 			realColumnGap() {
 				return this.toPx(this.columnGap);
@@ -91,16 +110,13 @@
 			this.waterfallWidth = this.toPx(this.width);
 			
 			//触发事件，可获子组件宽度，此时瀑布流布局计算还未开始
-			this.$emit('getWaterfallItemWidth', this.realColumnWidth);
+			this.$emit('getWaterfallItemWidth', {detail: {width: this.realColumnWidth}});
 			
 			this.columnsHeight = (new Array(this.realColumnCount)).fill(0);
 			
 			this.columnsHeight.forEach((item, index) => {
 				this.columnsLeft[index] = (this.realColumnWidth + this.realColumnGap) * index + this.realLeftGap;
 			})
-		},
-		mounted() {
-			
 		},
 		methods: {
 			toPx(value) {
