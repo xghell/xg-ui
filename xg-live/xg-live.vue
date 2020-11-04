@@ -61,6 +61,7 @@
 			}
 		},
 		created() {
+			this.pillarHeightList = new Array(this.pillarCount).fill(this.pillarMixHeightNumber);
 			this.generatePillar();
 			
 			this.$watch('animation', (newValue, oldValue) => {
@@ -95,7 +96,7 @@
 				clearInterval(intervalId);
 			},
 			generatePillar() {
-				this.pillarHeightList = (new Array(this.pillarCount)).fill(0).map((item, index) => {
+				this.pillarHeightList = this.pillarHeightList.map((item, index) => {
 					return Math.random()*(this.pillarMaxHeightNumber - this.pillarMixHeightNumber) + this.pillarMixHeightNumber;
 				})
 			}
