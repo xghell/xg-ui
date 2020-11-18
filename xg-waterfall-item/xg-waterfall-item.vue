@@ -28,9 +28,7 @@
 		},
 		mounted() {
 			this.$nextTick(function(){
-				if (this.waterfall.autoLayout) {
-					this.calculateLayout();
-				}
+				this.calculateLayout();
 			})
 		},
 		computed: {
@@ -53,7 +51,7 @@
 					const waterfallItemHeight = data[0].height;
 					
 					const minColumnHeight = Math.min(...this.waterfall.columnsHeight);
-					
+					// console.log(minColumnHeight);
 					const minColumnIndex = this.waterfall.columnsHeight.indexOf(minColumnHeight);
 					
 					this.top = minColumnHeight;

@@ -1,14 +1,16 @@
 <template>
 	<!-- #ifdef APP-NVUE -->
-	<waterfall :style="{width: width + 'px'}" :column-count="realColumnCount" :column-width="realColumnWidth" :column-gap="realColumnGap" :left-gap="realLeftGap" :right-gap="realRightGap">
+	<waterfall class="waterfall" ref="waterfall" :style="{width: waterfallWidth + 'px'}" :show-scrollbar="showScrollbar" :column-count="realColumnCount" :column-width="realColumnWidth" :column-gap="realColumnGap" :left-gap="realLeftGap" :right-gap="realRightGap">
 		<slot></slot>
 	</waterfall>
 	<!-- #endif -->
 	
 	<!-- #ifndef APP-NVUE -->
-	<view class="waterfall" :style="{width: width + 'px', height: waterfallHeight + 'px'}">
-		<slot></slot>
-	</view>
+	<scroll-view class="waterfall" id="waterfall" :show-scrollbar="showScrollbar" :scroll-y="scrollY" :scroll-top="scrollTop" @scroll="onScroll">
+		<view :style="{width: waterfallWidth + 'px', height: waterfallHeight + 'px'}">
+			<slot></slot>
+		</view>
+	</scroll-view>
 	<!-- #endif -->
 </template>
 
@@ -22,7 +24,6 @@
 	 * column-gap: [可选]列与列的间隙. 如果指定了 normal ，则对应 32.
 	 * left-gap: [可选]左边cell和列表的间隙. 如果未指定 ，则对应 0
 	 * right-gap: [可选]右边cell和列表的间隙. 如果未指定，则对应 0
-	 * @getWaterfallItemWidth 获取子组件宽度，触发时瀑布流布局还未开始，可用于xg-waterfall-item中高度或其他尺寸，瀑布流依然生效
 	 */
 	export default {
 		name: 'XgWaterfall',
@@ -32,14 +33,13 @@
 			};
 		},
 		props: {
-			//如果为false,则必须手动调用xg-waterfall-item组件中的calculateLayout方法进行布局计算
-			autoLayout: {
-				type: Boolean,
-				default: true,
-			},
 			width: {
 				type: Number|String,
 				default: '750rpx'
+			},
+			showScrollbar: {
+				type: false,
+				default: true
 			},
 			columnCount: {
 				type: Number,
@@ -64,13 +64,23 @@
 		},
 		data() {
 			return {
-				waterfallWidth: 0,
+				// #ifndef APP-NVUE
+				scrollY: true,
+				scrollTop: 0,
+				old: {
+					scrollTop: 0,
+				},
+				// #endif
+				
 				waterfallHeight: 0,
 				columnsHeight: [],
 				columnsLeft: [],
 			}
 		},
 		computed: {
+			waterfallWidth() {
+				return this.toPx(this.width);
+			},
 			realColumnCount() {
 				// #ifdef APP-NVUE
 				return this.columnCount;
@@ -107,17 +117,21 @@
 			
 		},
 		created() {
-			this.waterfallWidth = this.toPx(this.width);
-			
-			//触发事件，可获子组件宽度，此时瀑布流布局计算还未开始
-			this.$emit('getWaterfallItemWidth', {detail: {width: this.realColumnWidth}});
-			
 			this.columnsHeight = (new Array(this.realColumnCount)).fill(0);
 			
 			this.columnsHeight.forEach((item, index) => {
 				this.columnsLeft[index] = (this.realColumnWidth + this.realColumnGap) * index + this.realLeftGap;
 			})
 		},
+		// #ifndef APP-NVUE
+		mounted() {
+			this.query = uni.createSelectorQuery().in(this.$root);
+		},
+		destroyed() {
+			this.query = null;
+		},
+		// #endif
+		
 		methods: {
 			toPx(value) {
 				const windowWidth = uni.getSystemInfoSync().windowWidth;
@@ -136,13 +150,72 @@
 				
 				throw new TypeError(`${value}单位格式不正确`);
 			},
+			
+			// #ifndef APP-NVUE
+			calculateLayout() {
+				this.columnsHeight = (new Array(this.realColumnCount)).fill(0);
+				
+				// #ifdef MP
+				this.$children.forEach(item => {
+					item.reCalculateLayout();
+				})
+				// #endif
+				
+				// #ifndef MP
+				this.$slots['default'].forEach(item => {
+					item.child.reCalculateLayout();
+				})
+				// #endif
+			},
+			onScroll(e) {
+				this.old.scrollTop = e.detail.scrollTop;
+			},
+			// #endif
+			
+			//args {id, headerHeight}
+			setSpecialEffects(args) {
+				// #ifdef APP-NVUE
+				this.$refs['waterfall'].setSpecialEffects(args);
+				// #endif
+				
+				// #ifndef APP-NVUE
+				const {id, headerHeight} = args;
+				
+				
+				if (id === '_root') {
+					this.query.selectViewport().fields({scrollOffset: true});
+				} else {
+					this.query.select('#' + id).fields({scrollOffset: true});
+				}
+				
+				this.query.exec(data => {
+					const scrollTop = data[0].scrollTop;
+					
+					if (headerHeight - scrollTop < 5) {
+						this.scrollY = true;
+					} else {
+						this.scrollTop = this.old.scrollTop;
+						
+						this.$nextTick(function(){
+							this.scrollTop = 0;
+							
+							this.$nextTick(function(){
+								this.scrollY = false;
+							})
+						})
+					}
+				})
+				// #endif
+			}
 		},
 	}
 </script>
 
 <style lang="scss" scoped>
 	.waterfall {
-		// border-width: 5px;
+		// flex: 1;
+		// height: 300px;
+		// border-width: 2px;
 		position: relative;
 		/* width: 750rpx; */
 	}
