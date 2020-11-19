@@ -190,7 +190,7 @@
 				
 				this.query.exec(data => {
 					const scrollTop = data[0].scrollTop;
-					
+					// console.log(headerHeight - scrollTop );
 					if (headerHeight - scrollTop < 5) {
 						this.scrollY = true;
 					} else {
@@ -214,6 +214,9 @@
 <style lang="scss" scoped>
 	.waterfall {
 		// flex: 1;
+		/* #ifdef MP */
+		height: 100%;
+		/* #endif */
 		// height: 300px;
 		// border-width: 2px;
 		position: relative;

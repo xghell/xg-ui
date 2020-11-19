@@ -6,7 +6,7 @@
 	<!-- #endif -->
 	
 	<!-- #ifndef APP-NVUE -->
-	<scroll-view :show-scrollbar="showScrollbar" scroll-y="true" >
+	<scroll-view class="list" :show-scrollbar="showScrollbar" scroll-y="true" >
 		<view>
 			<slot></slot>
 		</view>
@@ -26,5 +26,9 @@
 </script>
 
 <style lang="scss" scoped>
-
+	.list {
+		/* #ifdef MP */
+		height: 100%;
+		/* #endif */
+	}
 </style>
