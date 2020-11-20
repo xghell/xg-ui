@@ -6,7 +6,7 @@
 	<!-- #endif -->
 	
 	<!-- #ifndef APP-NVUE -->
-	<view id="header" class="header">
+	<view id="footer">
 		<slot></slot>
 	</view>
 	<!-- #endif -->
@@ -19,15 +19,15 @@
 		inject: ['waterfall'],
 		updated() {
 			const query = uni.createSelectorQuery().in(this);
-			query.select('#header').fields({size: true});
+			
+			query.select('#footer').fields({size: true});
 			
 			query.exec(data => {
-				this.waterfall.headerHeight = data[0].height;
+				this.waterfall.footerHeight = data[0].height;
 			})
 		},
 	}
 	// #endif
-	
 </script>
 
 <style lang="scss" scoped>

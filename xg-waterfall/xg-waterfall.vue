@@ -7,7 +7,7 @@
 	
 	<!-- #ifndef APP-NVUE -->
 	<scroll-view class="waterfall" id="waterfall" :show-scrollbar="showScrollbar" :scroll-y="scrollY" :scroll-top="scrollTop" @scroll="onScroll">
-		<view :style="{width: waterfallWidth + 'px', height: waterfallHeight + 'px'}">
+		<view :style="{width: waterfallWidth + 'px', height: waterfallHeightReal + 'px'}">
 			<slot></slot>
 		</view>
 	</scroll-view>
@@ -70,6 +70,8 @@
 				old: {
 					scrollTop: 0,
 				},
+				headerHeight: 0,
+				footerHeight: 0,
 				// #endif
 				
 				waterfallHeight: 0,
@@ -78,6 +80,9 @@
 			}
 		},
 		computed: {
+			waterfallHeightReal() {
+				return this.waterfallHeight + this.headerHeight + this.footerHeight;
+			},
 			waterfallWidth() {
 				return this.toPx(this.width);
 			},
@@ -152,21 +157,6 @@
 			},
 			
 			// #ifndef APP-NVUE
-			calculateLayout() {
-				this.columnsHeight = (new Array(this.realColumnCount)).fill(0);
-				
-				// #ifdef MP
-				this.$children.forEach(item => {
-					item.reCalculateLayout();
-				})
-				// #endif
-				
-				// #ifndef MP
-				this.$slots['default'].forEach(item => {
-					item.child.reCalculateLayout();
-				})
-				// #endif
-			},
 			onScroll(e) {
 				this.old.scrollTop = e.detail.scrollTop;
 			},

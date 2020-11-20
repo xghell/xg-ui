@@ -6,7 +6,7 @@
 	<!-- #endif -->
 	
 	<!-- #ifndef APP-NVUE -->
-	<view id="waterfall-item" class="waterfall-item" :style="{left: left + 'px', top: top + 'px', width: width + 'px'}">
+	<view id="waterfall-item" class="waterfall-item" :style="{left: left + 'px', top: topReal + 'px', width: width + 'px'}">
 		<slot></slot>
 	</view>
 	<!-- #endif -->
@@ -32,6 +32,9 @@
 			})
 		},
 		computed: {
+			topReal() {
+				return this.top + this.waterfall.headerHeight;
+			},
 			width() {
 				return this.waterfall.realColumnWidth;
 			}
