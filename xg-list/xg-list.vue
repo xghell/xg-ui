@@ -1,12 +1,12 @@
 <template>
 	<!-- #ifdef APP-NVUE -->
-	<list :show-scrollbar="showScrollbar">
+	<list :id="id" :show-scrollbar="showScrollbar">
 		<slot></slot>
 	</list>
 	<!-- #endif -->
 	
 	<!-- #ifndef APP-NVUE -->
-	<scroll-view class="list" :show-scrollbar="showScrollbar" scroll-y="true" >
+	<scroll-view :id="id" class="list" :show-scrollbar="showScrollbar" scroll-y="true" >
 		<view>
 			<slot></slot>
 		</view>
@@ -17,6 +17,9 @@
 <script>
 	export default {
 		props: {
+			id: {
+				type: String,
+			},
 			showScrollbar: {
 				type: Boolean,
 				default: true
