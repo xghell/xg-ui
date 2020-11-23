@@ -6,7 +6,7 @@
 	<!-- #endif -->
 	
 	<!-- #ifndef APP-NVUE -->
-	<view id="footer">
+	<view id="footer" :style="{top: topReal + 'px'}">
 		<slot></slot>
 	</view>
 	<!-- #endif -->
@@ -15,8 +15,13 @@
 <script>
 	// #ifndef APP-NVUE
 	export default {
-		name: 'XgWaterfallHeader',
+		name: 'XgWaterfallFooter',
 		inject: ['waterfall'],
+		computed: {
+			topReal() {
+				return this.waterfall.waterfallHeightReal - this.waterfall.footerHeight;
+			}
+		},
 		updated() {
 			const query = uni.createSelectorQuery().in(this);
 			

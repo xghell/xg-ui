@@ -1,12 +1,12 @@
 <template>
 	<!-- #ifdef APP-NVUE -->
-	<waterfall class="waterfall" ref="waterfall" :style="{width: waterfallWidth + 'px'}" :show-scrollbar="showScrollbar" :column-count="realColumnCount" :column-width="realColumnWidth" :column-gap="realColumnGap" :left-gap="realLeftGap" :right-gap="realRightGap">
+	<waterfall class="waterfall" ref="waterfall" :style="{width: waterfallWidth + 'px'}" :show-scrollbar="showScrollbar" :column-count="realColumnCount" :column-width="realColumnWidth" :column-gap="realColumnGap" :left-gap="realLeftGap" :right-gap="realRightGap" @loadmore="onLoadmore">
 		<slot></slot>
 	</waterfall>
 	<!-- #endif -->
 	
 	<!-- #ifndef APP-NVUE -->
-	<scroll-view class="waterfall" id="waterfall" :show-scrollbar="showScrollbar" :scroll-y="scrollY" :scroll-top="scrollTop" @scroll="onScroll">
+	<scroll-view class="waterfall" id="waterfall" :show-scrollbar="showScrollbar" :scroll-y="scrollY" :scroll-top="scrollTop" @scroll="onScroll" @scrolltolower="onScrolltolower">
 		<view :style="{width: waterfallWidth + 'px', height: waterfallHeightReal + 'px'}">
 			<slot></slot>
 		</view>
@@ -159,8 +159,21 @@
 			// #ifndef APP-NVUE
 			onScroll(e) {
 				this.old.scrollTop = e.detail.scrollTop;
+				this.$emit('scroll', e);
+			},
+			onScrolltolower(e) {
+				this.$emit('scrolltolower', e);
 			},
 			// #endif
+			
+			
+			// #ifdef APP-NVUE
+			onLoadmore(e) {
+				this.$emit('loadmore', e);
+			},
+			// #endif
+			
+			
 			
 			//args {id, headerHeight}
 			setSpecialEffects(args) {
