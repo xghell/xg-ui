@@ -6,7 +6,7 @@
 	<!-- #endif -->
 	
 	<!-- #ifndef APP-NVUE -->
-	<view id="header" class="header">
+	<view id="header" class="header" :style="{width: width + 'px'}">
 		<slot></slot>
 	</view>
 	<!-- #endif -->
@@ -17,13 +17,23 @@
 	export default {
 		name: 'XgWaterfallHeader',
 		inject: ['waterfall'],
+		computed: {
+			width() {
+				return this.waterfall.waterfallWidth;
+			}
+		},
 		updated() {
-			const query = uni.createSelectorQuery().in(this);
-			query.select('#header').fields({size: true});
-			
-			query.exec(data => {
-				this.waterfall.headerHeight = data[0].height;
-			})
+			this.update();
+		},
+		methods: {
+			update() {
+				const query = uni.createSelectorQuery().in(this);
+				query.select('#header').fields({size: true});
+				
+				query.exec(data => {
+					this.waterfall.headerHeight = data[0].height;
+				})
+			}
 		},
 	}
 	// #endif

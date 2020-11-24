@@ -6,7 +6,7 @@
 	<!-- #endif -->
 	
 	<!-- #ifndef APP-NVUE -->
-	<view id="footer" :style="{top: topReal + 'px'}">
+	<view id="footer" :style="{top: topReal + 'px', width: width + 'px'}">
 		<slot></slot>
 	</view>
 	<!-- #endif -->
@@ -18,18 +18,26 @@
 		name: 'XgWaterfallFooter',
 		inject: ['waterfall'],
 		computed: {
+			width() {
+				return this.waterfall.waterfallWidth;
+			},
 			topReal() {
 				return this.waterfall.waterfallHeightReal - this.waterfall.footerHeight;
 			}
 		},
 		updated() {
-			const query = uni.createSelectorQuery().in(this);
-			
-			query.select('#footer').fields({size: true});
-			
-			query.exec(data => {
-				this.waterfall.footerHeight = data[0].height;
-			})
+			this.update();
+		},
+		methods: {
+			update() {
+				const query = uni.createSelectorQuery().in(this);
+				
+				query.select('#footer').fields({size: true});
+				
+				query.exec(data => {
+					this.waterfall.footerHeight = data[0].height;
+				})
+			}
 		},
 	}
 	// #endif
