@@ -1,9 +1,9 @@
 <template>
 	<view class="xg-money-component">
-		<text class="xg-money-item" :class="{'line-through': lineThrough}" :style="{color: color, fontSize: camelFontSize + 'px',lineHeight: camelFontSize + 'px', transform: 'translateY(' + camelTranslateY + 'px)'}">{{currencySymbol}}</text>
-		<text class="xg-money-item" :class="{'line-through': lineThrough}" :style="{color: color, fontSize: fontSize + 'px', lineHeight: fontSize + 'px'}">{{moneyArray[0]}}</text>
-		<text class="xg-money-item" :class="{'line-through': lineThrough}" v-if="precision" :style="{color: color, fontSize: camelFontSize + 'px',lineHeight: camelFontSize + 'px', transform: 'translateY(' + camelTranslateY + 'px)'}">.</text>
-		<text class="xg-money-item" :class="{'line-through': lineThrough}" :style="{color: color, fontSize: camelFontSize + 'px',lineHeight: camelFontSize + 'px', transform: 'translateY(' + camelTranslateY + 'px)'}">{{moneyArray[1]}}</text>
+		<text class="xg-money-item" :class="{'line-through': lineThrough}" :style="{color: color, fontSize: camelFontSize + 'px',lineHeight: camelFontSize + 'px', fontWeight: weight, transform: 'translateY(' + camelTranslateY + 'px)'}">{{currencySymbol}}</text>
+		<text class="xg-money-item" :class="{'line-through': lineThrough}" :style="{color: color, fontSize: fontSize + 'px', fontWeight: weight, lineHeight: fontSize + 'px'}">{{moneyArray[0]}}</text>
+		<text class="xg-money-item" :class="{'line-through': lineThrough}" v-if="precision" :style="{color: color, fontSize: camelFontSize + 'px', fontWeight: weight,lineHeight: camelFontSize + 'px', transform: 'translateY(' + camelTranslateY + 'px)'}">.</text>
+		<text class="xg-money-item" :class="{'line-through': lineThrough}" :style="{color: color, fontSize: camelFontSize + 'px', fontWeight: weight,lineHeight: camelFontSize + 'px', transform: 'translateY(' + camelTranslateY + 'px)'}">{{moneyArray[1]}}</text>
 	</view>
 </template>
 
@@ -15,6 +15,10 @@
 			color: {
 				type: String,
 				// default: 'red'
+			},
+			//字体粗细
+			weight: {
+				type: String,
 			},
 			//字体大小，驼峰形式为则为峰顶
 			size: {
