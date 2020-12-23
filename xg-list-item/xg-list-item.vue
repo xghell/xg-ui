@@ -1,12 +1,12 @@
 <template>
 	<!-- #ifdef APP-NVUE -->
-	<cell>
+	<cell :recycle="recycle" @appear="onAppear">
 		<slot></slot>
 	</cell>
 	<!-- #endif -->
 	
 	<!-- #ifndef APP-NVUE -->
-	<view>
+	<view :id="id">
 		<slot></slot>
 	</view>
 	<!-- #endif -->
@@ -14,6 +14,20 @@
 
 <script>
 	export default {
+		props: {
+			id: {
+				type: String
+			},
+			recycle: {
+				type: Boolean,
+				default: true
+			},
+		},
+		methods: {
+			onAppear(e) {
+				this.$emit('appear', e);
+			}
+		},
 	}
 </script>
 

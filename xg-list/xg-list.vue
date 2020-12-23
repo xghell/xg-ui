@@ -1,12 +1,12 @@
 <template>
 	<!-- #ifdef APP-NVUE -->
-	<list :id="id" :show-scrollbar="showScrollbar" :scroll-top="scrollTop" @scroll="onScroll">
+	<list :id="id" :show-scrollbar="showScrollbar" :scroll-top="scrollTop" :scroll-into-view="scrollIntoView" @scroll="onScroll">
 		<slot></slot>
 	</list>
 	<!-- #endif -->
 	
 	<!-- #ifndef APP-NVUE -->
-	<scroll-view :id="id" class="list" :show-scrollbar="showScrollbar" scroll-y="true" :scroll-top="scrollTop" @scroll="onScroll">
+	<scroll-view :id="id" class="list" :show-scrollbar="showScrollbar"  :scroll-into-view="scrollIntoView" scroll-y="true" :scroll-top="scrollTop" @scroll="onScroll">
 		<view>
 			<slot></slot>
 		</view>
@@ -30,6 +30,9 @@
 			scrollTop: {
 				type: Number,
 				default: 0,
+			},
+			scrollIntoView: {
+				type: String,
 			}
 		},
 		methods: {
