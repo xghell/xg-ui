@@ -10,21 +10,14 @@
 	// #endif
 	
 	export default {
+		name: 'IndexListItem',
 		inject: ['_indexList'],
-		data() {
-			return {
-				
-			}
-		},
-		created() {
-			
-		},
-		mounted() {
-			this.$nextTick(function(){
+		methods: {
+			layout() {
 				// #ifdef APP-NVUE
 				dom.getComponentRect(this.$refs['index-list-item'], data => {
-					// console.log(data.size);
-					this._indexList.childrenRects.push(data.size);
+					const top = data.size.top;
+					this._indexList.itemTopList.push(top);
 				})
 				// #endif
 				
@@ -33,17 +26,15 @@
 				
 				query.select('#index-list-item').fields({rect: true});
 				query.exec(data => {
-					// console.log(data[0]);
-					this._indexList.childrenRects.push(data[0]);
+					const top = data[0].top;
+					this._indexList.itemTopList.push(top);
 				})
 				// #endif
-			})
-		},
-		methods: {
+			},
 		},
 	}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 </style>
