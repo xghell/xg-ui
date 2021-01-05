@@ -11,7 +11,7 @@
 		</swiper>
 		
 		<view class="media-title">
-			<uni-icons type="arrowleft" :size="20" color="#FFFFFF" @click="onCloseTap"></uni-icons>
+			<uni-icons type="closeempty" :size="20" color="#FFFFFF" @click="onCloseTap"></uni-icons>
 			<view class="media-title-center">
 				<text class="media-title-text">{{current + 1}}/</text>
 				<text class="media-title-text">{{mediaCount}}</text>
@@ -23,6 +23,9 @@
 </template>
 
 <script>
+	/**
+	 * @property {Function} preview 
+	 */
 	export default {
 		props: {
 			title: {
@@ -45,7 +48,22 @@
 				return this.urls.length;
 			}
 		},
+		mounted() {
+			// #ifdef APP-PLUS
+			plus.navigator.setFullscreen(true);
+			// #endif
+		},
+		destroyed() {
+			// #ifdef APP-PLUS
+			plus.navigator.setFullscreen(false);
+			// #endif
+		},
 		methods: {
+			/**
+			 * @param {Object} urls
+			 * @param {Object} current
+			 * @example preview([{type: 'image', src: ''}, {type: 'video', scr: ''}], 0);
+			 */
 			preview(urls, current) {
 				this.show = true;
 				this.urls = urls;
@@ -127,7 +145,7 @@
 		flex-direction: row;
 		justify-content: space-between;
 		
-		padding: $uni-spacing-row-base $uni-spacing-col-lg;
+		padding: $uni-spacing-row-lg $uni-spacing-col-lg;
 	}
 	.media-title-center {
 		/* #ifndef APP-NVUE */
